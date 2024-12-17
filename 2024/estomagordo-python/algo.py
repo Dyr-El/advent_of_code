@@ -84,29 +84,35 @@ def custsort(l, comparator):
     return ll
 
 
-def a_star(graph, start, goal, step_finder, heuristic):
-    previous = {}
-    frontier = [(heuristic(graph, start, goal), 0, start, None)]
+def a_star(start, step_finder, heuristic):
+    answers = []
+    frontier = [(heuristic(start), 0, start, None, {})]
 
-    while True:
-        best_possible, steps, state, prev = heappop(frontier)
+    while frontier:
+        best_possible, steps, state, prev, previous = heappop(frontier)
 
-        if state in previous:
-            continue
+        if answers and answers[0].path_length < steps:
+            break
+
+        # if state in previous:
+        #     continue
 
         previous[state] = prev
 
         if best_possible == steps:
             path = unroll(state, previous)
-            return SearchResult(path, steps, state, len(path))
+            answers.append(SearchResult(path, steps, state, len(path)))
+            continue
         
-        for next_state in step_finder(graph, state):
+        for next_state, cost in step_finder(state):
             if next_state in previous:
                 continue
 
-            h = heuristic(graph, next_state, goal)
+            h = heuristic(next_state)
 
-            heappush(frontier, (h + steps + 1, steps + 1, next_state, state))
+            heappush(frontier, (h + steps + cost, steps + cost, next_state, state, dict(previous)))
+
+    return answers
 
 
 def merge_ranges(ranges):
