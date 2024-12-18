@@ -69,12 +69,12 @@ def solve_a(lines):
 
 
 def solve_b(lines):
-    _, bb, cc, code = parse(lines)
+    _, _, _, code = parse(lines)
     n = len(code)
             
-    def run(a, b, c):
-        out = []
-        pointer = 0
+    def run(a):
+        b = 0
+        c = 0
 
         def combo(val):
             match val:
@@ -87,10 +87,9 @@ def solve_b(lines):
                 case _:
                     return val
 
-        while 0 <= pointer < n:
-            opcode = code[pointer]
-            operand = code[pointer+1]
-            move_pointer = True
+        for i in range(0, len(code)-2, 2):
+            opcode = code[i]
+            operand = code[i+1]
 
             match opcode:
                 case 0:
@@ -99,39 +98,40 @@ def solve_b(lines):
                     b ^= operand
                 case 2:
                     b = combo(operand)%8
-                case 3:
-                    if a != 0:
-                        pointer = operand
-                        move_pointer = False
                 case 4:
                     b ^= c
                 case 5:
-                    out.append(combo(operand)%8)
-                    if out != code[:len(out)]:
-                        return out
+                    return combo(operand)%8
                 case 6:
                     b = a // 2**combo(operand)
                 case 7:
                     c = a // 2**combo(operand)
 
-            if move_pointer:
-                pointer += 2
-
-        return out
+    bmappings = defaultdict(list)
     
-    a = 8**(len(code)-1)
+    for a in range(2**6):
+        result = run(a)
+        bmappings[result].append(a)
 
-    while True:
-        output = run(a, bb, cc)
+    frontier = [(1, a) for a in bmappings[code[0]]]
+    highest = -1
 
-        if output == code:
+    for pos, a in frontier:
+        if pos == len(code):
             return a
         
-        a += 1
+        target = code[pos]
 
-        if a % 10000000 == 0:
-            print(a, log(a, 8), len(output), len(code))
+        for possa in bmappings[target]:
+            mid_three = a//2**(3*pos)
+            if possa%8 == mid_three:
+                highest = max(highest, pos)
+                top_three = possa//8
+                term = top_three << (pos-1)*3+6
+                frontier.append((pos+1, a+term))
+            
 
+    return len(frontier)
 
 def main():
     lines = []
@@ -147,3 +147,5 @@ if __name__ == '__main__':
     print(main())
 
 # 4,4,2,6,5,4,3,1,7 awrong
+# 2121125247610067 too high
+# 2121125247610067

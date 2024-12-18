@@ -7,6 +7,7 @@ from helpers import overlap
 
 @dataclass
 class SearchResult:
+    success: bool
     path: list[object]
     cost: int
     end_state: object
@@ -23,11 +24,11 @@ def unroll(node, previous):
     return path[::-1]
 
 
-def sssp(graph, start, goal_function, step_finder):
+def sssp(start, goal_function, step_finder):
     previous = {}
     frontier = [(0, start, None)]
 
-    while True:
+    while frontier:
         steps, position, prev = heappop(frontier)
 
         if position in previous:
@@ -37,14 +38,15 @@ def sssp(graph, start, goal_function, step_finder):
 
         if goal_function(position):
             path = unroll(position, previous)
-            return SearchResult(path, steps, position, len(path))
+            return SearchResult(True, path, steps, position, len(path))
 
-        for cost, next_step in step_finder(graph, position):
+        for cost, next_step in step_finder(position):
             if next_step in previous:
                 continue
 
             heappush(frontier, (steps+cost, next_step, position))
 
+    return SearchResult(False, [], -1, None, -1)
 
 def custsort(l, comparator):
     n = len(l)
@@ -101,7 +103,7 @@ def a_star(start, step_finder, heuristic):
 
         if best_possible == steps:
             path = unroll(state, previous)
-            answers.append(SearchResult(path, steps, state, len(path)))
+            answers.append(SearchResult(True, path, steps, state, len(path)))
             continue
         
         for next_state, cost in step_finder(state):
