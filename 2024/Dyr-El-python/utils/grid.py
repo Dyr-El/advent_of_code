@@ -5,17 +5,20 @@ from collections import deque
 class Grid2D:
     """Automatically generates a dictionary grid (possibly sparse) from a 2D string"""
 
-    def __init__(self, layout: str, relevant: callable = None):
+    def __init__(self, layout: str, relevant: callable = None, xmax=None, ymax=None, def_inside='.', def_outside='#'):
         """Creates a grid from a 2D string with an optional functin to filter out relevant characters."""
         self.m_data = dict()
-        self.m_maxx = 0
-        self.m_maxy = 0
+        self.m_maxx, self.m_maxy = 0, 0
+        self.m_def_inside, self.m_def_outside = def_inside, def_outside
         for yidx, line in enumerate(layout.splitlines()):
             self.m_maxy = max(self.m_maxy, yidx)
             for xidx, ch in enumerate(line):
                 self.m_maxx = max(xidx, self.m_maxx)
                 if relevant is None or relevant(ch):
                     self.m_data[(xidx, yidx)] = ch
+        self.m_maxx = xmax if xmax is not None else self.m_maxx
+        self.m_maxy = ymax if ymax is not None else self.m_maxy
+        
 
     @property
     def max_x(self) -> int:
@@ -49,6 +52,10 @@ class Grid2D:
             key = key.as_tuple()
         if key not in self.m_data and default is not None:
             return default
+        if key not in self.m_data:
+            if 0 <= key[0] <= self.max_x and 0 <= key[1] <= self.max_y:
+                return self.m_def_inside
+            return self.m_def_outside
         return self.m_data[key]
 
     def items(self, filter=lambda ch, pos: True):
@@ -67,7 +74,7 @@ class Grid2D:
         for y in range(0, self.max_y + 1):
             line = []
             for x in range(0, self.max_x + 1):
-                line.append(self[x, y])
+                line.append(self.get((x, y), '.'))
             lines.append("".join(line))
         return "\n".join(lines)
 
