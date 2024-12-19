@@ -7,14 +7,14 @@ from icecream import ic
 from peek import peek
 
 
-def parse(inp:str):
+def parse(inp: str):
     return Grid2D(inp)
 
 
 def part1(inp):
     grid = parse(inp)
-    start_pos = grid.find(lambda _, x: x=="S")[0]
-    end_pos = grid.find(lambda _, x: x=="E")[0]
+    start_pos = grid.find(lambda _, x: x == "S")[0]
+    end_pos = grid.find(lambda _, x: x == "E")[0]
     direction = Vec2D(1, 0)
     rem = deque([(start_pos, direction)])
     cost = {((start_pos, direction)): 0}
@@ -46,8 +46,8 @@ def track_back(p, d, wb, cost):
 
 def part2(inp):
     grid = parse(inp)
-    start_pos = grid.find(lambda _, x: x=="S")[0]
-    end_pos = grid.find(lambda _, x: x=="E")[0]
+    start_pos = grid.find(lambda _, x: x == "S")[0]
+    end_pos = grid.find(lambda _, x: x == "E")[0]
     direction = Vec2D(1, 0)
     rem = deque([(start_pos, direction)])
     cost = {((start_pos, direction)): 0}
@@ -103,6 +103,7 @@ ex_inp = """###############
 #.###.#.#.#.#.#
 #S..#.....#...#
 ###############""".strip()
+
 
 def test_1_1():
     expected = 7036

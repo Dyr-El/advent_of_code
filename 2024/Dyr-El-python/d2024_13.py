@@ -4,6 +4,7 @@ from collections import namedtuple, deque
 from functools import cache, reduce
 from itertools import combinations
 
+
 def parse_line(inp):
     if inp == "":
         return None
@@ -28,20 +29,20 @@ def parse(inp):
         machine[segm[0]] = segm[1:]
     machines.append(machine)
     return machines
-        
+
 
 def part1(inp):
     machines = parse(inp)
     tot = 0
     for machine in machines:
         x, y = machine["Prize"]
-        ax, ay = machine["A"] 
-        bx, by = machine["B"] 
+        ax, ay = machine["A"]
+        bx, by = machine["B"]
         mincost = x * 5
-        for a in range(x//ax + 1):
-            remx, remy = x - ax*a, y - ay*a
-            if remx % bx == 0 and remy % by == 0 and remx//bx == remy//by:
-                cost = a*3 + remx//bx
+        for a in range(x // ax + 1):
+            remx, remy = x - ax * a, y - ay * a
+            if remx % bx == 0 and remy % by == 0 and remx // bx == remy // by:
+                cost = a * 3 + remx // bx
                 if cost < mincost:
                     mincost = cost
         if mincost == x * 5:
@@ -49,12 +50,16 @@ def part1(inp):
         tot += mincost
     return tot
 
+
 from math import gcd, sqrt
+
+
 def primes(n):
     for i in range(2, int(sqrt(n))):
         if n % i == 0:
             return [i] + primes(n // i)
     return [n]
+
 
 def part2(inp):
     machines = parse(inp)
@@ -62,10 +67,12 @@ def part2(inp):
     for machine in machines:
         x_p, y_p = machine["Prize"]
         x_p, y_p = x_p + 10000000000000, y_p + 10000000000000
-        x_a, y_a = machine["A"] 
-        x_b, y_b = machine["B"] 
+        x_a, y_a = machine["A"]
+        x_b, y_b = machine["B"]
         t_b = round((x_p - y_p / y_a * x_a) / (x_b - y_b * x_a / y_a))
-        t_a = round((y_p - (x_p - y_p / y_a * x_a) / (x_b - y_b * x_a / y_a) * y_b) / y_a)
+        t_a = round(
+            (y_p - (x_p - y_p / y_a * x_a) / (x_b - y_b * x_a / y_a) * y_b) / y_a
+        )
         try:
             assert x_p == t_a * x_a + t_b * x_b
             assert y_p == t_a * y_a + t_b * y_b

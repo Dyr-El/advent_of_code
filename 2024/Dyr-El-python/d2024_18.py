@@ -7,17 +7,17 @@ from peek import peek
 
 
 def parse_line(line):
-    return [int(s) for s in line.split(',')]
+    return [int(s) for s in line.split(",")]
 
 
-def parse(inp:str):
+def parse(inp: str):
     return parse_lines(inp, parse_line)
 
 
 def find_distances(start_position, grid):
     remaining = deque([start_position])
-    distance = {start_position:0}
-    
+    distance = {start_position: 0}
+
     while remaining:
         position = remaining.popleft()
         for delta in Grid2D.four_directions():
@@ -29,14 +29,14 @@ def find_distances(start_position, grid):
             distance[next_position] = distance[position] + 1
             remaining.append(next_position)
     return distance
-    
+
 
 def part1(inp, amount=1024, xmax=70, ymax=70):
     coords = parse(inp)
 
     grid = Grid2D("", xmax=xmax, ymax=ymax)
     for x, y in coords[:amount]:
-        grid[x,y] = "#"
+        grid[x, y] = "#"
     return find_distances(Vec2D(0, 0), grid)[Vec2D(xmax, ymax)]
 
 
@@ -50,17 +50,17 @@ def part2(inp, xmax=70, ymax=70):
         time = (max_time + min_time) // 2
         grid = Grid2D("", xmax=xmax, ymax=ymax)
         for x, y in coords[:time]:
-            grid[x,y] = "#"
+            grid[x, y] = "#"
         distance = find_distances(Vec2D(0, 0), grid)
-        
+
         if end_position not in distance:
             if (time - 1) in reachable:
-                return ','.join(map(str, coords[time - 1]))
+                return ",".join(map(str, coords[time - 1]))
             unreachable.add(time)
             max_time = time
         else:
             if (time + 1) in unreachable:
-                return ','.join(map(str, coords[time]))
+                return ",".join(map(str, coords[time]))
             reachable.add(time)
             min_time = time
 
@@ -97,6 +97,7 @@ ex_inp = """5,4
 
 # Program: 0,3,5,4,3,0"""
 
+
 def test_1_1():
     expected = 22
     assert part1(ex_inp, amount=12, xmax=6, ymax=6) == expected
@@ -105,7 +106,6 @@ def test_1_1():
 def test_1_2():
     expected = "6,1"
     assert part2(ex_inp, xmax=6, ymax=6) == expected
-
 
 
 def main(inp):

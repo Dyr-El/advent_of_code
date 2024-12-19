@@ -5,7 +5,15 @@ from collections import deque
 class Grid2D:
     """Automatically generates a dictionary grid (possibly sparse) from a 2D string"""
 
-    def __init__(self, layout: str, relevant: callable = None, xmax=None, ymax=None, def_inside='.', def_outside='#'):
+    def __init__(
+        self,
+        layout: str,
+        relevant: callable = None,
+        xmax=None,
+        ymax=None,
+        def_inside=".",
+        def_outside="#",
+    ):
         """Creates a grid from a 2D string with an optional functin to filter out relevant characters."""
         self.m_data = dict()
         self.m_maxx, self.m_maxy = 0, 0
@@ -18,7 +26,6 @@ class Grid2D:
                     self.m_data[(xidx, yidx)] = ch
         self.m_maxx = xmax if xmax is not None else self.m_maxx
         self.m_maxy = ymax if ymax is not None else self.m_maxy
-        
 
     @property
     def max_x(self) -> int:
@@ -74,7 +81,7 @@ class Grid2D:
         for y in range(0, self.max_y + 1):
             line = []
             for x in range(0, self.max_x + 1):
-                line.append(self.get((x, y), '.'))
+                line.append(self.get((x, y), "."))
             lines.append("".join(line))
         return "\n".join(lines)
 
