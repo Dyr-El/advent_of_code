@@ -76,7 +76,7 @@ def solve_b(lines):
         else:
             maxci = ci-1
 
-    return corrupted[minci]
+    return ','.join(str(val) for val in corrupted[minci])
 
 
 def main():
