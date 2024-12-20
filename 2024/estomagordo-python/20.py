@@ -15,7 +15,6 @@ def parse(lines):
     
 
 def solve_a(lines):
-    return 1
     grid = parse(lines)
     height, width = dimensions(grid)
     sy, sx = find_in_grid(grid, 'S')
@@ -59,7 +58,7 @@ def solve_b(lines):
                 distances[(ny, nx)] = steps+1
                 frontier.append((steps+1, ny, nx))
 
-    saves = set()
+    count = 0
     max_cheat = 20
     min_save = 100
     
@@ -77,9 +76,9 @@ def solve_b(lines):
                 diff = distances[(y, x)] - distances[(y+dy, x+dx)]
 
                 if diff-steps >= min_save:
-                    saves.add((y, x, y+dy, x+dx))
+                    count += 1
         
-    return len(saves)
+    return count
 
 
 def main():
