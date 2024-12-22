@@ -32,9 +32,63 @@ def solve_a(lines):
 
 
 def solve_b(lines):
-    data = parse(lines)
+    numbers = parse(lines)
+    fours = set()
 
-    return None
+    def simulate(number, times=2000):
+        last = -1
+        diffs = []
+
+        for _ in range(times):
+            number ^= (number * 64)
+            number %= 16777216
+            number ^= (number // 32)
+            number %= 16777216
+            number ^= (number * 2048)
+            number %= 16777216
+            lastdig = number%10
+
+            if last > -1:
+                diffs.append(lastdig-last)
+
+            if len(diffs) > 3:
+                fours.add(tuple(diffs[-4:]))
+
+            last = lastdig
+
+    for number in numbers:
+        simulate(number)
+
+    print(len(fours))
+
+    def search(number, sequence, times=2000):
+        last = -1
+        diffs = []
+
+        for _ in range(times):
+            number ^= (number * 64)
+            number %= 16777216
+            number ^= (number // 32)
+            number %= 16777216
+            number ^= (number * 2048)
+            number %= 16777216
+            lastdig = number%10
+
+            if last > -1:
+                diffs.append(lastdig-last)
+
+            last = lastdig
+
+            if diffs[-4:] == sequence:
+                return lastdig
+
+        return 0
+    
+    def testseq(sequence):
+        print(sequence)
+        return sum(search(number, list(sequence)) for number in numbers)
+    
+    return max(testseq(seq) for seq in sorted(fours))
 
 
 def main():
