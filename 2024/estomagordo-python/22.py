@@ -33,9 +33,10 @@ def solve_a(lines):
 
 def solve_b(lines):
     numbers = parse(lines)
-    fours = set()
+    global_fours = defaultdict(int)
 
     def simulate(number, times=2000):
+        local_fours = {}
         last = -1
         diffs = []
 
@@ -52,43 +53,19 @@ def solve_b(lines):
                 diffs.append(lastdig-last)
 
             if len(diffs) > 3:
-                fours.add(tuple(diffs[-4:]))
+                key = tuple(diffs[-4:])
+                if key not in local_fours:
+                    local_fours[key] = lastdig
 
             last = lastdig
+
+        for k, v in local_fours.items():
+            global_fours[k] += v
 
     for number in numbers:
         simulate(number)
 
-    print(len(fours))
-
-    def search(number, sequence, times=2000):
-        last = -1
-        diffs = []
-
-        for _ in range(times):
-            number ^= (number * 64)
-            number %= 16777216
-            number ^= (number // 32)
-            number %= 16777216
-            number ^= (number * 2048)
-            number %= 16777216
-            lastdig = number%10
-
-            if last > -1:
-                diffs.append(lastdig-last)
-
-            last = lastdig
-
-            if diffs[-4:] == sequence:
-                return lastdig
-
-        return 0
-    
-    def testseq(sequence):
-        print(sequence)
-        return sum(search(number, list(sequence)) for number in numbers)
-    
-    return max(testseq(seq) for seq in sorted(fours))
+    return max(v for v in global_fours.values())
 
 
 def main():
