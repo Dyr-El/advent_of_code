@@ -48,6 +48,7 @@ def sssp(start, goal_function, step_finder):
 
     return SearchResult(False, [], -1, None, -1)
 
+
 def custsort(l, comparator):
     n = len(l)
 
@@ -132,3 +133,52 @@ def merge_ranges(ranges):
 
         if not found:
             return ranges
+        
+
+def union_find(edges):
+    @dataclass
+    class UnionFindNode:
+        leader: str
+        size: int
+
+    nodes = {}
+
+    def find(key):
+        compression = []
+
+        while nodes[key].leader != key:
+            compression.append(key)
+            key = nodes[key].leader
+
+        for compressee in compression:
+            nodes[compressee].leader = key
+
+        return key
+    
+    def union(a, b):
+        alead = find(a)
+        blead = find(b)
+
+        if alead == blead:
+            return
+        
+        asize = nodes[alead].size
+        bsize = nodes[blead].size
+
+        newlead, newfollow = alead, blead
+
+        if bsize > asize:
+            newlead, newfollow = newfollow, newlead
+
+        nodes[newfollow].leader = newlead
+        nodes[newlead].size = asize+bsize
+
+    for a, b in edges:
+        if a not in nodes:
+            nodes[a] = UnionFindNode(a, 1)
+        if b not in nodes:
+            nodes[b] = UnionFindNode(b, 1)
+
+        union(a, b)
+        
+    return nodes
