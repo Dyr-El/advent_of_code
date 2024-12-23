@@ -16,18 +16,50 @@ def parse(lines):
 
 def solve_a(lines):
     edges = parse(lines)
+    graph = defaultdict(set)
+    three_tees = set()
 
-    nodes = union_find(edges)
+    for a, b in edges:
+        graph[a].add(b)
+        graph[b].add(a)
 
-    clusters = {key for key in nodes.keys() if key[0] == 't' and nodes[nodes[key].leader].size == 3}
+    for a, b in combinations(graph.keys(), 2):
+        if b not in graph[a]:
+            continue
 
-    return len(clusters)
+        for c in graph[a] & graph[b]:
+            if a[0] == 't' or b[0] == 't' or c[0] == 't':
+                three_tees.add(tuple(sorted([a, b, c])))
+
+    return len(three_tees)
 
 
 def solve_b(lines):
-    data = parse(lines)
+    edges = parse(lines)
+    graph = defaultdict(set)
+    
+    for a, b in edges:
+        graph[a].add(b)
+        graph[b].add(a)
 
-    return None
+    largest = []
+
+    for a in graph.keys():
+        for b in graph[a]:
+            for c in graph[a]:
+                if c not in graph[b]:
+                    continue
+
+                clique = {a, b, c}
+
+                for dcand in graph[c]:
+                    if all(dcand in graph[node] for node in clique):
+                        clique.add(dcand)
+
+                if len(clique) > len(largest):
+                    largest = sorted(clique)
+
+    return ','.join(largest)
 
 
 def main():
@@ -42,3 +74,4 @@ def main():
 
 if __name__ == '__main__':
     print(main())
+    
