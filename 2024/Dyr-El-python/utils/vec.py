@@ -67,3 +67,11 @@ class Vec2D:
             (self.x - minx) % (maxx - minx + 1) + minx,
             (self.y - miny) % (maxy - miny + 1) + miny,
         )
+
+    def iter_distance(self, dist):
+        for delta_y in range(-dist, dist+1):
+            for delta_x in range(-(dist - abs(delta_y)), dist - abs(delta_y) + 1):
+                yield self + Vec2D(delta_x, delta_y)
+    
+    def length(self):
+        return abs(self.x) + abs(self.y)

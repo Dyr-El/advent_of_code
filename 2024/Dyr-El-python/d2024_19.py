@@ -36,15 +36,9 @@ def part1(inp):
 
 @cache
 def number_of_ways(patterns, design):
-    return (
-        1
-        if design == ""
-        else sum(
-            number_of_ways(patterns, design[len(pattern) :])
-            for pattern in patterns
-            if design.startswith(pattern)
-        )
-    )
+    return 1 if design == "" else sum(number_of_ways(patterns, design[len(pattern) :])
+                                      for pattern in patterns
+                                      if design.startswith(pattern))
 
 
 def part2(inp):
