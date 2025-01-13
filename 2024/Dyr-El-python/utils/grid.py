@@ -74,6 +74,8 @@ class Grid2D:
                 yield Vec2D(pos[0], pos[1]), ch
 
     def find(self, f):
+        if isinstance(f, str):
+            return self.find(lambda _, ch: ch == f)
         return [pos for pos, ch in self.items() if f(pos, ch)]
 
     def __str__(self):

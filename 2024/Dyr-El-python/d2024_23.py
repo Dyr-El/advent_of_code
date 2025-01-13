@@ -1,13 +1,9 @@
 from aoc_prepare import PrepareAoc
-from utils import parse_lines, Grid2D, Vec2D
-from collections import namedtuple, deque, defaultdict
-from functools import cache, reduce
-from itertools import combinations, count, permutations
-from peek import peek
+from collections import defaultdict
 
 
 def parse(inp):
-    result = defaultdict(lambda:set())
+    result = defaultdict(lambda: set())
     for line in inp.splitlines():
         a, _, b = line.partition("-")
         result[a].add(b)
@@ -35,6 +31,8 @@ def part1(inp):
 
 
 cache = {}
+
+
 def build_lp(lan_party, remaining_comps, relations):
     cachekey = (frozenset(lan_party), frozenset(remaining_comps))
     if cachekey in cache:
@@ -45,7 +43,9 @@ def build_lp(lan_party, remaining_comps, relations):
     largest_lan_party = lan_party
     for computer in remaining_comps:
         if relations[computer] & lan_party == lan_party:
-            nxt = build_lp(lan_party | {computer}, remaining_comps - {computer}, relations)
+            nxt = build_lp(
+                lan_party | {computer}, remaining_comps - {computer}, relations
+            )
             if len(nxt) > largest_size:
                 largest_lan_party = nxt
                 largest_size = len(nxt)
