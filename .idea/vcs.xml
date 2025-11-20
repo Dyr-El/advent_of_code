@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/digimatic-rust" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/f00ale-cpp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/ingo-rust" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/johan1a-scala" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/kjelloh-cpp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/lyxell-sqlite" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/2024/squid-box-csharp" vcs="Git" />
+  </component>
+</project>
