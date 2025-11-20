@@ -15,7 +15,7 @@ public class Day1 {
         List<Integer> rightNumbers = new ArrayList<>();
 
 
-        List<String> lines = Files.readAllLines(Path.of("src/com/lennell/input.txt"));
+        List<String> lines = Files.readAllLines(Path.of("src/com/lennell/input1.txt"));
         for (String line : lines) {
             String[] parts = line.trim().split("\\s+");
             if (parts.length == 2) {
@@ -27,8 +27,6 @@ public class Day1 {
 
         List<Integer> sortedLeft = leftNumbers.stream().sorted().toList();
         List<Integer> sortedRight = rightNumbers.stream().sorted().toList();
-        System.out.println("Sorted Left: " + sortedLeft);
-        System.out.println("Sorted Right: " + sortedRight);
         if (sortedLeft.size() != sortedRight.size()) {
             System.out.println("Lists are of different sizes");
             return;
