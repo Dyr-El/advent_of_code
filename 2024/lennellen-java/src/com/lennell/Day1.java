@@ -15,7 +15,7 @@ public class Day1 {
         List<Integer> rightNumbers = new ArrayList<>();
 
 
-        List<String> lines = Files.readAllLines(Path.of("src/com/lennell/test1.txt"));
+        List<String> lines = Files.readAllLines(Path.of("src/com/lennell/input1.txt"));
         for (String line : lines) {
             String[] parts = line.trim().split("\\s+");
             if (parts.length == 2) {
@@ -39,15 +39,13 @@ public class Day1 {
         }
         System.out.println("Sum of paired elements: " + sum);
 
-        final int sum2 = 0;
+        int sum2 = 0;
 
-        for (Integer l: leftNumbers){
-            System.out.print(l + " : ");
-            System.out.println(rightNumbers.stream().filter( r -> r==l).count());
+        for (int l: leftNumbers){
+            sum2 += l * (int) rightNumbers.stream().filter( r -> r==l).count();
         }
 
-
-        System.out.println("Sum part 2 of paired elements: " + sum);
+        System.out.println("Sum part 2 of paired elements: " + sum2);
 
 
     }
