@@ -9,6 +9,8 @@ from algo import a_star, custsort, merge_ranges, sssp
 from constants import DIRECTIONS, EPSILON, HUGE, UNHUGE
 from helpers import adjacent, between, chunks, chunks_with_overlap, columns, digits, dimensions, distance, distance_sq, eight_neighs, eight_neighs_bounded, find_in_grid, forward_rays_with_diagonals, grouped_lines, ints, manhattan, multall, n_neighs, neighs, neighs_bounded, overlap, positives, rays, rays_from_inside, solve_system, words
 
+from random import randint
+
 
 def parse(lines):
     a, b = grouped_lines(lines)
@@ -27,8 +29,14 @@ def parse(lines):
     return starts, gates
 
 
-def solve_a(lines):
-    starts, gates = parse(lines)
+def retrieve_number(signals, initial):
+    relevant = [(signal, str(int(signals[signal]))) for signal in signals.keys() if signal[0] == initial]
+    relevant.sort(key=lambda signal: -int(signal[0][1:]))
+
+    return int(''.join(rel[1] for rel in relevant), 2)
+
+
+def add(starts, gates):
     outputs = set()
     signals = {}
 
@@ -63,18 +71,32 @@ def solve_a(lines):
 
             signals[output] = aval&bval if operation == 'AND' else aval|bval if operation == 'OR' else aval^bval
 
-    binary = ''
+    return retrieve_number(signals, 'z')
 
-    for output in sorted(outputs, reverse=True):
-        binary += str(int(signals[output]))
 
-    return int(binary, 2)
+def solve_a(lines):
+    starts, gates = parse(lines)
+    
+    return add(starts, gates)
 
 
 def solve_b(lines):
-    data = parse(lines)
+    experiment_count = 20
+    maxrange = 10**10
+    _, gates = parse(lines)
 
-    return None
+    def validate(config):
+        for _ in range(experiment_count):
+            a = randint(1, maxrange)
+            b = randint(1, maxrange)
+            
+            if add(config, gates) != a+b:
+                return False
+            
+        return True
+    
+    sus_zs = [key for key in gates.keys() if key[0] == 'z' and gates[key][1] != 'XOR']
+    other_xors = 
 
 
 def main():
