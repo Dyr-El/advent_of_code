@@ -17,32 +17,40 @@ def parse(inp):
 
 
 def count_robots(robots, minx, miny, maxx, maxy):
-    return sum((minx <= robot[0].x <= maxx and miny <= robot[0].y <= maxy) 
-               for robot in robots)
+    return sum(
+        (minx <= robot[0].x <= maxx and miny <= robot[0].y <= maxy) for robot in robots
+    )
 
 
 def plot(robots, maxx, maxy):
     lines = []
-    for y in range(maxy+1):
+    for y in range(maxy + 1):
         line = []
-        for x in range(maxx+1):
-            line.append({True:"X", False:"."}[sum((robot[0].as_tuple() == (x, y) 
-                                                   for robot in robots)) > 0])
-        lines.append(''.join(line))
-    return '\n'.join(lines)
+        for x in range(maxx + 1):
+            line.append(
+                {True: "X", False: "."}[
+                    sum((robot[0].as_tuple() == (x, y) for robot in robots)) > 0
+                ]
+            )
+        lines.append("".join(line))
+    return "\n".join(lines)
 
 
 def calc_safety(robots, max_x, max_y):
     next_robots = []
     for robot in robots:
-        next_robots.append(((robot[0] + robot[1] * 100).clamp(0, 0, max_x, max_y), robot[1]))
+        next_robots.append(
+            ((robot[0] + robot[1] * 100).clamp(0, 0, max_x, max_y), robot[1])
+        )
     robots = next_robots
     max_x2 = max_x // 2 - 1
     max_y2 = max_y // 2 - 1
-    return (count_robots(robots, 0, 0, max_x2, max_y2) *
-            count_robots(robots, max_x2 + 2, 0, max_x, max_y2) *
-            count_robots(robots, max_x2 + 2, max_y2 + 2, max_x, max_y) *
-            count_robots(robots, 0, max_y2 + 2, max_x2, max_y))
+    return (
+        count_robots(robots, 0, 0, max_x2, max_y2)
+        * count_robots(robots, max_x2 + 2, 0, max_x, max_y2)
+        * count_robots(robots, max_x2 + 2, max_y2 + 2, max_x, max_y)
+        * count_robots(robots, 0, max_y2 + 2, max_x2, max_y)
+    )
 
 
 def calc_context(robots):
@@ -58,23 +66,31 @@ def find_convergence(robots, max_x, max_y):
         context.append((calc_context(robots), idx))
         if len(context) > 20:
             ordered_contexts = sorted(context)
-            if (ordered_contexts[-1][0] - ordered_contexts[-2][0] == ordered_contexts[-2][0] - ordered_contexts[-3][0] and
-                ordered_contexts[-2][0] - ordered_contexts[-3][0] == ordered_contexts[-3][0] - ordered_contexts[-4][0]):
+            if (
+                ordered_contexts[-1][0] - ordered_contexts[-2][0]
+                == ordered_contexts[-2][0] - ordered_contexts[-3][0]
+                and ordered_contexts[-2][0] - ordered_contexts[-3][0]
+                == ordered_contexts[-3][0] - ordered_contexts[-4][0]
+            ):
                 period = abs(ordered_contexts[-1][1] - ordered_contexts[-2][1])
                 offset = idx % period
                 return period, offset
         next_robots = []
         for robot in robots:
-            next_robots.append(((robot[0] + robot[1]).clamp(0, 0, max_x, max_y), robot[1]))
+            next_robots.append(
+                ((robot[0] + robot[1]).clamp(0, 0, max_x, max_y), robot[1])
+            )
         robots = next_robots
         idx += 1
-    
+
 
 def find_pattern(robots, max_x, max_y):
     period, offset = find_convergence(robots, max_x, max_y)
     next_robots = []
     for robot in robots:
-        next_robots.append(((robot[0] + robot[1] * offset).clamp(0, 0, max_x, max_y), robot[1]))
+        next_robots.append(
+            ((robot[0] + robot[1] * offset).clamp(0, 0, max_x, max_y), robot[1])
+        )
     robots = next_robots
     count = offset
     while True:
@@ -82,7 +98,9 @@ def find_pattern(robots, max_x, max_y):
         count = count + period
         next_robots = []
         for robot in robots:
-            next_robots.append(((robot[0] + robot[1] * period).clamp(0, 0, max_x, max_y), robot[1]))
+            next_robots.append(
+                ((robot[0] + robot[1] * period).clamp(0, 0, max_x, max_y), robot[1])
+            )
         robots = next_robots
         s = plot(robots, max_x, max_y)
         if "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" in s:
