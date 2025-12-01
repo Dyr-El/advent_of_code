@@ -1,0 +1,122 @@
+from utils.vec import Vec2D
+from collections import deque
+
+
+class Grid2D:
+    """Automatically generates a dictionary grid (possibly sparse) from a 2D string"""
+
+    def __init__(
+        self,
+        layout: str,
+        relevant: callable = None,
+        xmax=None,
+        ymax=None,
+        def_inside=".",
+        def_outside="#",
+    ):
+        """Creates a grid from a 2D string with an optional functin to filter out relevant characters."""
+        self.m_data = dict()
+        self.m_maxx, self.m_maxy = 0, 0
+        self.m_def_inside, self.m_def_outside = def_inside, def_outside
+        for yidx, line in enumerate(layout.splitlines()):
+            self.m_maxy = max(self.m_maxy, yidx)
+            for xidx, ch in enumerate(line):
+                self.m_maxx = max(xidx, self.m_maxx)
+                if relevant is None or relevant(ch):
+                    self.m_data[(xidx, yidx)] = ch
+        self.m_maxx = xmax if xmax is not None else self.m_maxx
+        self.m_maxy = ymax if ymax is not None else self.m_maxy
+
+    @property
+    def max_x(self) -> int:
+        """Largest x in the grid (not necessarily populated if filtering)"""
+        return self.m_maxx
+
+    @property
+    def max_y(self):
+        """Largest y in the grid (not necessarily populated if filtering)"""
+        return self.m_maxy
+
+    def __getitem__(self, key: tuple | Vec2D):
+        """Indexing support for grid, works with tuple or Vec2D"""
+        return self.get(key)
+
+    def __setitem__(self, key: tuple | Vec2D, ch: str):
+        """Indexing support for grid, works with tuple or Vec2D"""
+        if isinstance(key, Vec2D):
+            key = key.as_tuple()
+        self.m_data[key] = ch
+
+    def __contains__(self, key):
+        """Check if grid contains a key"""
+        if isinstance(key, Vec2D):
+            key = key.as_tuple()
+        return key in self.m_data
+
+    def get(self, key: tuple | Vec2D, default: str = None):
+        """Indexing with optional default"""
+        if not isinstance(key, tuple):
+            key = key.as_tuple()
+        if key not in self.m_data and default is not None:
+            return default
+        if key not in self.m_data:
+            if 0 <= key[0] <= self.max_x and 0 <= key[1] <= self.max_y:
+                return self.m_def_inside
+            return self.m_def_outside
+        return self.m_data[key]
+
+    def items(self, filter=lambda ch, pos: True):
+        """Iterates through all present positions, yielding pos, character pairs"""
+        # print(f"items({self=}, filter=lambda ch, pos: True)")
+        for pos, ch in self.m_data.items():
+            if filter(ch, pos):
+                # print(ch, pos)
+                yield Vec2D(pos[0], pos[1]), ch
+
+    def find(self, f):
+        if isinstance(f, str):
+            return self.find(lambda _, ch: ch == f)
+        return [pos for pos, ch in self.items() if f(pos, ch)]
+
+    def __str__(self):
+        lines = []
+        for y in range(0, self.max_y + 1):
+            line = []
+            for x in range(0, self.max_x + 1):
+                line.append(self.get((x, y), "."))
+            lines.append("".join(line))
+        return "\n".join(lines)
+
+    def find_region(self, pos, directions=None):
+        if directions is None:
+            directions = self.four_directions()
+        ch = self[pos]
+        rem = deque([pos])
+        region = {pos}
+        while rem:
+            p = rem.popleft()
+            for dir in directions:
+                neighbour = p + dir
+                if neighbour in region:
+                    continue
+                if self.get(neighbour, " ") == ch:
+                    region.add(neighbour)
+                    rem.append(neighbour)
+        return region
+
+    @staticmethod
+    def four_directions():
+        return (Vec2D(0, -1), Vec2D(1, 0), Vec2D(0, 1), Vec2D(-1, 0))
+
+    @staticmethod
+    def eight_directions():
+        return (
+            Vec2D(0, -1),
+            Vec2D(1, -1),
+            Vec2D(1, 0),
+            Vec2D(1, 1),
+            Vec2D(0, 1),
+            Vec2D(-1, 1),
+            Vec2D(-1, 0),
+            Vec2D(-1, -1),
+        )
