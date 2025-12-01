@@ -38,8 +38,6 @@ def solve_b(lines):
     moves = parse(lines)
     count = 0
     val = 50
-    print(min(moves))
-    print(max(moves))
 
     for move in moves:
         sign = 1 if move > 0 else -1
