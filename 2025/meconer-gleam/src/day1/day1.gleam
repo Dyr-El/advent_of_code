@@ -2,22 +2,11 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
-import simplifile
-
-pub fn read_input(file_path: String) -> String {
-  case simplifile.read(file_path) {
-    Ok(content) -> content
-    Error(_) -> "Error reading file"
-  }
-}
+import utils
 
 pub fn day1p1(path) -> Int {
-  let input =
-    read_input(path)
-    |> string.trim
-    |> string.split("\n")
   let #(cnt, _pos) =
-    input
+    utils.get_input_lines(path)
     |> list.fold(#(0, 50), fn(acc, line) {
       let dir = case string.first(line) {
         Ok(c) -> c
@@ -43,22 +32,15 @@ pub fn day1p1(path) -> Int {
 }
 
 pub fn day1p2(path) -> Int {
-  let input =
-    read_input(path)
-    |> string.trim
-    |> string.split("\n")
   let #(cnt, _pos) =
-    input
+    utils.get_input_lines(path)
     |> list.fold(#(0, 50), fn(acc, line) {
       let dir = case string.first(line) {
         Ok(c) -> c
         Error(_) -> ""
       }
-      let delta_str = string.slice(line, 1, string.length(line))
-      let delta = case int.parse(delta_str) {
-        Ok(n) -> n
-        Error(_) -> 0
-      }
+      let delta =
+        string.slice(line, 1, string.length(line)) |> utils.safe_int_parse
       let #(cnt, pos) = acc
       let whole_turns = delta / 100
       let delta_rest = delta % 100
