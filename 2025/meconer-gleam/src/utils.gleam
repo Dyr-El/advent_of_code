@@ -4,7 +4,7 @@ import simplifile
 
 pub fn read_input(file_path: String) -> String {
   case simplifile.read(file_path) {
-    Ok(content) -> content
+    Ok(content) -> string.trim(content)
     Error(_) -> "Error reading file"
   }
 }
