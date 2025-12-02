@@ -1,5 +1,6 @@
 import day1/day1
 import day2/day2
+import day3/day3
 import gleeunit
 
 pub fn main() -> Nil {
@@ -41,4 +42,14 @@ pub fn is_valid_p2_test() {
 pub fn day2p2_test() {
   let res = day2.day2p2("src/day2/sample.txt")
   assert res == 4_174_379_265
+}
+
+pub fn day3p1_test() {
+  let res = day3.day3p1("src/day3/sample.txt")
+  assert res == 0
+}
+
+pub fn day3p2_test() {
+  let res = day3.day3p2("src/day3/sample.txt")
+  assert res == 0
 }
