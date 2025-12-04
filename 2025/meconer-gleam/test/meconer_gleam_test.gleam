@@ -1,6 +1,6 @@
 // import day1/day1
 // import day2/day2
-import day3/day3
+// import day3/day3
 import gleeunit
 
 pub fn main() -> Nil {
@@ -44,12 +44,24 @@ pub fn main() -> Nil {
 //   assert res == 4_174_379_265
 // }
 
-pub fn day3p1_test() {
-  let res = day3.day3p1("src/day3/sample.txt")
-  assert res == 357
+// pub fn day3p1_test() {
+//   let res = day3.day3p1("src/day3/sample.txt")
+//   assert res == 357
+// }
+
+// pub fn day3p2_test() {
+//   let res = day3.day3p2("src/day3/sample.txt")
+//   assert res == 3_121_910_778_619
+// }
+
+import day4/day4
+
+pub fn day4p1_test() {
+  let res = day4.day4p1("src/day4/sample.txt")
+  assert res == 13
 }
 
-pub fn day3p2_test() {
-  let res = day3.day3p2("src/day3/sample.txt")
-  assert res == 3_121_910_778_619
+pub fn day4p2_test() {
+  let res = day4.day4p2("src/day4/sample.txt")
+  assert res == 43
 }
