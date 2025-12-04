@@ -63,5 +63,5 @@ pub fn day4p1_test() {
 
 pub fn day4p2_test() {
   let res = day4.day4p2("src/day4/sample.txt")
-  assert res == 3_121_910_778_619
+  assert res == 43
 }
