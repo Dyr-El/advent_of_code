@@ -1,7 +1,8 @@
 // import day1/day1
 // import day2/day2
 // import day3/day3
-import day4/day4
+// import day4/day4
+import day5/day5
 
 pub fn main() -> Nil {
   // let path = "src/day1/input.txt"
@@ -13,8 +14,11 @@ pub fn main() -> Nil {
   // let path = "src/day3/input.txt"
   // day3.day3p1(path)
   // day3.day3p2(path)
-  let path = "src/day4/input.txt"
-  day4.day4p1(path)
-  day4.day4p2(path)
+  // let path = "src/day4/input.txt"
+  // day4.day4p1(path)
+  // day4.day4p2(path)
+  let path = "src/day5/input.txt"
+  day5.day5p1(path)
+  day5.day5p2(path)
   Nil
 }
