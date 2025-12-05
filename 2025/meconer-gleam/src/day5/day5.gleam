@@ -90,14 +90,16 @@ pub fn insert_fn(range_list: List(#(Int, Int))) -> List(#(Int, Int)) {
   list.fold(range_list, [], fn(acc, range) {
     case acc {
       [] -> [range]
-
-      [f_range, ..rest] -> {
+      [a_range] -> {
+        // Only 1 range accumulated
+        let combined = combine_ranges(a_range, range)
+        combined
+      }
+      acc -> {
         let #(overlapping, non_overlapping) =
-          list.partition(rest, fn(rng) { overlaps(f_range, rng) })
-        echo f_range
-        echo overlapping
+          list.partition(acc, fn(rng) { overlaps(range, rng) })
         let new_range =
-          list.fold(overlapping, f_range, fn(acc_range, rng) {
+          list.fold(overlapping, range, fn(acc_range, rng) {
             let combined = combine_ranges(acc_range, rng)
             case combined {
               [cr] -> cr
@@ -113,9 +115,13 @@ pub fn insert_fn(range_list: List(#(Int, Int))) -> List(#(Int, Int)) {
 pub fn day5p2(path) -> Int {
   let #(ranges, _ingredients) = get_input(path)
   let ranges = parse_ranges(ranges)
-  let new_ranges = insert_fn(ranges) |> echo
+  let new_ranges = insert_fn(ranges)
 
-  let res = 0
+  let res =
+    list.fold(new_ranges, 0, fn(acc, range) {
+      let #(rs, re) = range
+      acc + re - rs + 1
+    })
   io.println("Day 5 part 2 : " <> int.to_string(res))
   res
 }
