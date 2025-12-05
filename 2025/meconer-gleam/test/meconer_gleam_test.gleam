@@ -65,21 +65,33 @@ pub fn main() -> Nil {
 //   let res = day4.day4p2("src/day4/sample.txt")
 //   assert res == 43
 // }
-import day5/day5
+// import day5/day5
 
-pub fn day5p1_test() {
-  let res = day5.day5p1("src/day5/sample.txt")
+// pub fn day5p1_test() {
+//   let res = day5.day5p1("src/day5/sample.txt")
+//   assert res == 3
+// }
+
+// pub fn overlaps_test() {
+//   assert day5.overlaps(#(1, 5), #(4, 6)) == True
+//   assert day5.overlaps(#(4, 6), #(1, 5)) == True
+//   assert day5.overlaps(#(1, 5), #(6, 7)) == False
+//   assert day5.overlaps(#(6, 7), #(1, 5)) == False
+// }
+
+// pub fn day5p2_test() {
+//   let res = day5.day5p2("src/day5/sample.txt")
+//   assert res == 14
+// }
+
+import day6/day6
+
+pub fn day6p1_test() {
+  let res = day6.day6p1("src/day6/sample.txt")
   assert res == 3
 }
 
-pub fn overlaps_test() {
-  assert day5.overlaps(#(1, 5), #(4, 6)) == True
-  assert day5.overlaps(#(4, 6), #(1, 5)) == True
-  assert day5.overlaps(#(1, 5), #(6, 7)) == False
-  assert day5.overlaps(#(6, 7), #(1, 5)) == False
-}
-
-pub fn day5p2_test() {
-  let res = day5.day5p2("src/day5/sample.txt")
+pub fn day6p2_test() {
+  let res = day6.day6p2("src/day6/sample.txt")
   assert res == 14
 }
