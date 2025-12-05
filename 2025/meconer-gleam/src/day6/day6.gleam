@@ -21,12 +21,12 @@ pub fn get_input(path) {
 pub fn day6p1(path) -> Int {
   let res = 0
 
-  io.println("Day 5 part 1 : " <> int.to_string(res))
+  io.println("Day 6 part 1 : " <> int.to_string(res))
   res
 }
 
 pub fn day6p2(path) -> Int {
   let res = 0
-  io.println("Day 5 part 2 : " <> int.to_string(res))
+  io.println("Day 6 part 2 : " <> int.to_string(res))
   res
 }
