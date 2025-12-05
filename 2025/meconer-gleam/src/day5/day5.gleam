@@ -77,9 +77,43 @@ pub fn combine_ranges(r1: #(Int, Int), r2: #(Int, Int)) -> List(#(Int, Int)) {
   }
 }
 
+pub fn overlaps(r1, r2) {
+  let #(r1s, r1e) = r1
+  let #(r2s, r2e) = r2
+  case r1s < r2s {
+    True -> r1e >= r2s
+    False -> r2e >= r1s
+  }
+}
+
+pub fn insert_fn(range_list: List(#(Int, Int))) -> List(#(Int, Int)) {
+  list.fold(range_list, [], fn(acc, range) {
+    case acc {
+      [] -> [range]
+
+      [f_range, ..rest] -> {
+        let #(overlapping, non_overlapping) =
+          list.partition(rest, fn(rng) { overlaps(f_range, rng) })
+        echo f_range
+        echo overlapping
+        let new_range =
+          list.fold(overlapping, f_range, fn(acc_range, rng) {
+            let combined = combine_ranges(acc_range, rng)
+            case combined {
+              [cr] -> cr
+              _ -> panic as "Err"
+            }
+          })
+        [new_range, ..non_overlapping]
+      }
+    }
+  })
+}
+
 pub fn day5p2(path) -> Int {
   let #(ranges, _ingredients) = get_input(path)
   let ranges = parse_ranges(ranges)
+  let new_ranges = insert_fn(ranges) |> echo
 
   let res = 0
   io.println("Day 5 part 2 : " <> int.to_string(res))

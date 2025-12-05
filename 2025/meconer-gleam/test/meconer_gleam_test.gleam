@@ -72,7 +72,14 @@ pub fn day5p1_test() {
   assert res == 3
 }
 
-pub fn day4p2_test() {
+pub fn overlaps_test() {
+  assert day5.overlaps(#(1, 5), #(4, 6)) == True
+  assert day5.overlaps(#(4, 6), #(1, 5)) == True
+  assert day5.overlaps(#(1, 5), #(6, 7)) == False
+  assert day5.overlaps(#(6, 7), #(1, 5)) == False
+}
+
+pub fn day5p2_test() {
   let res = day5.day5p2("src/day5/sample.txt")
   assert res == 14
 }
