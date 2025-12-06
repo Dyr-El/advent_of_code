@@ -1,0 +1,17 @@
+∇ solveDay6part1 {
+	rows ← io:read "part06.txt"
+	op ← @* = (@\s≠)⍛/ ↑¯1↑rows
+	d ← ⍉ ⊃ ⍎¨¨ (@\s≠)⍛⊂¨ ¯1↓rows
+	+/ op % (+/d) (×/d)
+}
+
+∇ solveDay6part2 {
+	rows ← io:read "part06.txt"
+
+	⍝ Workaround due to limitation in disclose
+	zSpc ⇐ { (0≡¨⍵) % ⍵ @\s }
+
+	op ← @* = (@\s≠)⍛/ ↑¯1↑rows
+	d ← ({ ⊂ ⍎¨ (∨/@\s≠)¨⍛/ ⍵ }⍤1) ⊂[2] zSpc 2 0 1 ⍉ ⊃ (∨⌿@\s≠)⍛⊂ ⊃ ¯1↓rows
+	+/ op % (+/¨d) (×/¨d)
+}
