@@ -1,7 +1,4 @@
-from os import path
-from sys import argv
-
-program_file = lambda day: f"""from bisect import bisect_left, bisect_right
+from bisect import bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from functools import cache, reduce
 from heapq import heapify, heappop, heappush
@@ -14,25 +11,50 @@ from helpers import adjacent, between, chunks, chunks_with_overlap, columns, dig
 
 
 def parse(lines):
-    return None
+    out = []
+
+    for line in lines:
+        sign = 1 if line[0] == 'R' else -1
+        val = int(line[1:])
+        out.append(sign * val)
+
+    return out
     
 
 def solve_a(lines):
-    data = parse(lines)
+    moves = parse(lines)
+    count = 0
+    val = 50
 
-    return None
+    for move in moves:
+        val = (val + move) % 100
+        if val == 0:
+            count += 1
+
+    return count
 
 
 def solve_b(lines):
-    data = parse(lines)
+    moves = parse(lines)
+    count = 0
+    val = 50
 
-    return None
+    for move in moves:
+        sign = 1 if move > 0 else -1
+        length = abs(move)
+
+        for step in range(length):
+            val = (val + sign) % 100
+            if val == 0:
+                count += 1
+
+    return count
 
 
 def main():
     lines = []
 
-    with open('{day}.txt') as f:
+    with open('1.txt') as f:
         for line in f.readlines():
             lines.append(line)
             
@@ -41,17 +63,3 @@ def main():
 
 if __name__ == '__main__':
     print(main())
-"""
-
-if __name__ == '__main__':
-    day = argv[1]
-    
-    program = f'{day}.py'
-    inp = f'{day}.txt'
-
-    if not path.isfile(program):
-        with open(program, 'w') as g:
-            g.write(program_file(day))
-    if not path.isfile(inp):
-        with open(inp, 'w') as g:
-            g.write('')

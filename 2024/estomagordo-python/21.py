@@ -1,7 +1,4 @@
-from os import path
-from sys import argv
-
-program_file = lambda day: f"""from bisect import bisect_left, bisect_right
+from bisect import bisect_left, bisect_right
 from collections import Counter, defaultdict, deque
 from functools import cache, reduce
 from heapq import heapify, heappop, heappush
@@ -14,11 +11,27 @@ from helpers import adjacent, between, chunks, chunks_with_overlap, columns, dig
 
 
 def parse(lines):
-    return None
+    return [line.rstrip() for line in lines]
     
 
 def solve_a(lines):
-    data = parse(lines)
+    codes = parse(lines)
+
+    numeric = [
+        ['7', '8', '9'],
+        ['4', '5', '6'],
+        ['1', '2', '3'],
+        [' ', '0', 'A']
+    ]
+
+    directional = [
+        [' ', '^', 'A'],
+        ['<', 'v', '>']
+    ]
+
+    def write(states):
+        pass
+
 
     return None
 
@@ -32,7 +45,7 @@ def solve_b(lines):
 def main():
     lines = []
 
-    with open('{day}.txt') as f:
+    with open('21.txt') as f:
         for line in f.readlines():
             lines.append(line)
             
@@ -41,17 +54,3 @@ def main():
 
 if __name__ == '__main__':
     print(main())
-"""
-
-if __name__ == '__main__':
-    day = argv[1]
-    
-    program = f'{day}.py'
-    inp = f'{day}.txt'
-
-    if not path.isfile(program):
-        with open(program, 'w') as g:
-            g.write(program_file(day))
-    if not path.isfile(inp):
-        with open(inp, 'w') as g:
-            g.write('')
