@@ -23,26 +23,27 @@ def parse(lines):
 
 
 def parse_b(lines):
-    raw_grid = [line.split() for line in lines]
-    
-    h,w = dimensions(raw_grid)
-
+    starts = [x for x in range(len(lines[-1])) if lines[-1][x] != ' ']
+    widest = max(len(line) for line in lines)
     cols = []
 
-    for x in range(w):
+    for colindex in range(len(starts)):
+        stopx = starts[colindex+1] if colindex < len(starts) - 1 else widest
+        startx = starts[colindex]
+        operator = lines[-1][startx]
         col = []
-        max_digits = max(len(raw_grid[y][x])for y in range(h))
 
-        for digits in range(max_digits, 0, -1):
+        for x in range(stopx-1, startx-1, -1):
             num = ''
 
-            for y in range(h-1):
-                if len(raw_grid[y][x]) >= digits:
-                    num += raw_grid[y][x][digits-1]
+            for line in lines:
+                if x < len(line) and line[x].isdigit():
+                    num += line[x]
 
-            col.append(int(num))
+            if num:
+                col.append(int(num))
 
-        col.append(raw_grid[-1][x])
+        col.append(operator)
         cols.append(col)
 
     return cols
@@ -71,7 +72,6 @@ def solve_a(lines):
 
 def solve_b(lines):
     cols = parse_b(lines)
-    print(cols)
 
     total = 0
 
