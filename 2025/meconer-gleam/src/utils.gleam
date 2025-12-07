@@ -21,3 +21,15 @@ pub fn safe_int_parse(s: String) -> Int {
     Error(_) -> panic as "Invalid int"
   }
 }
+
+pub fn find_first(s: String, ch: String, idx: Int) {
+  case string.is_empty(s) {
+    True -> -1
+    False -> {
+      case string.starts_with(s, ch) {
+        True -> idx
+        False -> find_first(string.drop_start(s, 1), ch, idx + 1)
+      }
+    }
+  }
+}
