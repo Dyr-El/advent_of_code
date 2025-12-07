@@ -84,14 +84,25 @@ pub fn main() -> Nil {
 //   assert res == 14
 // }
 
-import day6/day6
+// import day6/day6
 
-pub fn day6p1_test() {
-  let res = day6.day6p1("src/day6/sample.txt")
-  assert res == 4_277_556
+// pub fn day6p1_test() {
+//   let res = day6.day6p1("src/day6/sample.txt")
+//   assert res == 4_277_556
+// }
+
+// pub fn day6p2_test() {
+//   let res = day6.day6p2("src/day6/sample.txt")
+//   assert res == 3_263_827
+// }
+import day7/day7
+
+pub fn day7p1_test() {
+  let res = day7.day7p1("src/day7/sample.txt")
+  assert res == 21
 }
 
-pub fn day6p2_test() {
-  let res = day6.day6p2("src/day6/sample.txt")
+pub fn day7p2_test() {
+  let res = day7.day7p2("src/day7/sample.txt")
   assert res == 3_263_827
 }
