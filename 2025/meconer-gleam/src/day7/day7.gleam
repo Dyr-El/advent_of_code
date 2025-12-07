@@ -75,31 +75,33 @@ fn count_timelines(
   let next_pos = #(pos.0 + 1, pos.1)
 
   case next_pos.0 > max_depth {
-    True -> 1
+    True -> #(1, memo)
     False -> {
       case dict.has_key(memo, next_pos) {
         True -> {
           // We already counted from this pos. Just return the count
-          dict.get(memo, next_pos) |> result.unwrap(0)
+          #(dict.get(memo, next_pos) |> result.unwrap(0), memo)
         }
         False -> {
           case set.contains(splitters, next_pos) {
             True -> {
-              let count_left =
+              let #(count_left, memo) =
                 count_timelines(
                   #(pos.0 + 1, pos.1 - 1),
                   splitters,
                   max_depth,
                   memo,
                 )
-              let count_right =
+              let #(count_right, memo) =
                 count_timelines(
                   #(pos.0 + 1, pos.1 + 1),
                   splitters,
                   max_depth,
                   memo,
                 )
-              count_left + count_right
+              let count = count_left + count_right
+              let memo = dict.insert(memo, pos, count)
+              #(count, memo)
             }
             False -> {
               count_timelines(#(pos.0 + 1, pos.1), splitters, max_depth, memo)
@@ -130,8 +132,8 @@ pub fn day7p2(path) -> Int {
   let start_pos = #(0, start_col)
   let splitters = find_splitter_positions(lines, set.new(), 1)
   let max_depth = list.length(lines)
-  let res = count_timelines(start_pos, splitters, max_depth, dict.new()) |> echo
-  let res = 0
+  let #(res, _memo) =
+    count_timelines(start_pos, splitters, max_depth, dict.new())
   io.println("Day 7 part 2 : " <> int.to_string(res))
   res
 }
