@@ -32,7 +32,6 @@ def part2(data):
     
     n_rows = len(data)
     n_cols = len(data[0])
-    n_groups = len(operations)
 
     nt_rows = n_cols
     nt_cols = n_rows-1
@@ -42,26 +41,22 @@ def part2(data):
             transposed_data[cn][ln] = char
             
     numbers = [[]]
-    numbers_np2 = np.empty([n_groups, 10])
-    numbers_np2[:] = np.nan
-    group_counter = 0
-    item_counter = 0
     for l in transposed_data:
         line = "".join(l).strip()
         if line != "":
             numbers[-1].append(int(line))
-            numbers_np2[group_counter][item_counter] = int(line)
-            item_counter += 1
         else:
             numbers.append([])
-            group_counter += 1
-            item_counter = 0
 
-    # numbers_np = np.array(numbers)
-    numbers_np = numbers_np2
+    max_list_len = max((len(row) for row in transposed_data))
+    for row in numbers:
+        numbers_to_extend = max_list_len - len(row)
+        row = row.extend([np.nan] * numbers_to_extend)
+    numbers_np = np.array(numbers)
+
     operations_np = np.array(operations)
-    additions = np.repeat(np.expand_dims(operations_np == "+", 1), 10, 1)
-    products = np.repeat(np.expand_dims(operations_np == "*", 1), 10, 1)
+    additions = np.repeat(np.expand_dims(operations_np == "+", 1), numbers_np.shape[1], 1)
+    products = np.repeat(np.expand_dims(operations_np == "*", 1), numbers_np.shape[1], 1)
     
     total_sum = np.nansum(np.where(additions, numbers_np, 0), axis=1)
     total_product = np.nanprod(np.where(products, numbers_np, 0), axis=1)
