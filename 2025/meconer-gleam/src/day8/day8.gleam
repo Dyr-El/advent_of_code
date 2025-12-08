@@ -12,6 +12,9 @@ type Coord {
 }
 
 fn sq_dist(p1: Coord, p2: Coord) -> Int {
+  // Calculate the squared dist between p1 and p2
+  // No need to take the square root since we dont care
+  // about the real distance, just the order
   let dx = p2.x - p1.x
   let dy = p2.y - p1.y
   let dz = p2.z - p1.z
@@ -19,6 +22,7 @@ fn sq_dist(p1: Coord, p2: Coord) -> Int {
 }
 
 fn get_input(path: String) -> dict.Dict(Int, Coord) {
+  // Read input and make a dictionary with the line index as key
   let coords =
     utils.get_input_lines(path)
     |> list.map(fn(l) {
@@ -37,6 +41,7 @@ fn get_input(path: String) -> dict.Dict(Int, Coord) {
 }
 
 fn calc_all_dists(coords: dict.Dict(Int, Coord)) -> List(#(#(Int, Int), Int)) {
+  // Calculate the distance between all combinations of junction coords
   list.range(0, dict.size(coords) - 1)
   |> list.combination_pairs()
   |> list.fold([], fn(acc, pair) {
@@ -58,10 +63,13 @@ fn do_connections(
   connect_cnt: Int,
   coord_size: Int,
 ) -> List(set.Set(Int)) {
+  // Make a list of start_sets with each junction in a separate set
+  // so all junctions are in a set. This simplifies the fold below
   let start_sets =
     list.range(0, coord_size - 1)
     |> list.map(fn(n) { set.new() |> set.insert(n) })
   list.take(pair_dists, connect_cnt)
+  // Use only the first connect_cnt pairs, 10 resp 1000 in the example and real problem
   |> list.fold(start_sets, fn(acc, pair_dist) {
     let #(#(k1, k2), _dist) = pair_dist
     case list.find(acc, fn(kset) { set.contains(kset, k1) }) {
@@ -91,6 +99,8 @@ fn do_connections_p2(
   pair_dists: List(#(#(Int, Int), Int)),
   coord_size: Int,
 ) -> #(#(Int, Int), List(set.Set(Int))) {
+  // Make a list of start_sets with each junction in a separate set
+  // so all junctions are in a set. This simplifies the fold_until below
   let start_sets =
     list.range(0, coord_size - 1)
     |> list.map(fn(n) { set.new() |> set.insert(n) })
