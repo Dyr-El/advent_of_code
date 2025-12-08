@@ -109,11 +109,11 @@ pub fn main() -> Nil {
 import day8/day8
 
 pub fn day8p1_test() {
-  let res = day8.day8p1("src/day8/sample.txt")
-  assert res == 21
+  let res = day8.day8p1("src/day8/sample.txt", 10)
+  assert res == 40
 }
 
 pub fn day8p2_test() {
   let res = day8.day8p2("src/day8/sample.txt")
-  assert res == 40
+  assert res == 25_272
 }
