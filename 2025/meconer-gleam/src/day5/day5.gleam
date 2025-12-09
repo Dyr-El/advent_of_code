@@ -25,7 +25,7 @@ pub fn is_fresh(ingr: Int, ranges: List(#(Int, Int))) -> Bool {
   })
 }
 
-pub fn parse_ranges(ranges_str) {
+pub fn parse_ranges(ranges_str: String) -> List(#(Int, Int)) {
   string.split(ranges_str, "\n")
   |> list.map(fn(line) {
     string.split(line, on: "-")
@@ -77,7 +77,8 @@ pub fn combine_ranges(r1: #(Int, Int), r2: #(Int, Int)) -> List(#(Int, Int)) {
   }
 }
 
-pub fn overlaps(r1, r2) {
+// Checks if two ranges overlaps
+pub fn overlaps(r1: #(Int, Int), r2: #(Int, Int)) -> Bool {
   let #(r1s, r1e) = r1
   let #(r2s, r2e) = r2
   case r1s < r2s {
@@ -86,39 +87,49 @@ pub fn overlaps(r1, r2) {
   }
 }
 
-pub fn insert_fn(range_list: List(#(Int, Int))) -> List(#(Int, Int)) {
-  list.fold(range_list, [], fn(acc, range) {
-    case acc {
+pub fn build_non_overlapping_ranges(
+  range_list: List(#(Int, Int)),
+) -> List(#(Int, Int)) {
+  list.fold(range_list, [], fn(acc_non_overlapping, range) {
+    case acc_non_overlapping {
       [] -> [range]
+      // First range. 
       [a_range] -> {
         // Only 1 range accumulated
         let combined = combine_ranges(a_range, range)
         combined
       }
-      acc -> {
+      acc_n_o -> {
+        // Multiple ranges collected
+        // Only consider the ones that are overlapping with the new one
         let #(overlapping, non_overlapping) =
-          list.partition(acc, fn(rng) { overlaps(range, rng) })
+          list.partition(acc_n_o, fn(rng) { overlaps(range, rng) })
+        // Combine the overlapping ranges into a single range. Since
+        // they all are overlapping the new one, they all should combine
+        // to only one
         let new_range =
           list.fold(overlapping, range, fn(acc_range, rng) {
             let combined = combine_ranges(acc_range, rng)
             case combined {
               [cr] -> cr
-              _ -> panic as "Err"
+              _ ->
+                panic as "The overlapping ranges should combine to only one range"
             }
           })
         [new_range, ..non_overlapping]
+        // Add the new range to the list.
       }
     }
   })
 }
 
-pub fn day5p2(path) -> Int {
+pub fn day5p2(path: String) -> Int {
   let #(ranges, _ingredients) = get_input(path)
   let ranges = parse_ranges(ranges)
-  let new_ranges = insert_fn(ranges)
+  let non_overlapping_ranges = build_non_overlapping_ranges(ranges)
 
   let res =
-    list.fold(new_ranges, 0, fn(acc, range) {
+    list.fold(non_overlapping_ranges, 0, fn(acc, range) {
       let #(rs, re) = range
       acc + re - rs + 1
     })
