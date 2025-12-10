@@ -34,41 +34,83 @@ def part1(inp):
 
 
 def part2(inp):
-    rects = parse_input(inp)
-    find_circuit = dict()
-    while rects:
-        x1, y1 = rects.pop(0)
-        for x2, y2 in rects:
-            if x1 == x2 or y1 == y2:
-                find_circuit[x1, y1] = (x2, y2)
-                break
-    rects = parse_input(inp)
+    red_tiles = parse_input(inp)
+    
+    edges = []
+    for i in range(len(red_tiles)):
+        x1, y1 = red_tiles[i]
+        x2, y2 = red_tiles[(i + 1) % len(red_tiles)]
+        edges.append(((x1, y1), (x2, y2)))
+    
+    vertical_edges = []
+    horizontal_edges = []
+    for (x1, y1), (x2, y2) in edges:
+        if x1 == x2:
+            vertical_edges.append((x1, min(y1, y2), max(y1, y2)))
+        else:
+            horizontal_edges.append((min(x1, x2), max(x1, x2), y1))
+    
+    def is_inside(x, y):
+        """Check if point (x, y) is inside the polygon using ray casting."""
+        crossings = 0
+        for edge_x, edge_y_min, edge_y_max in vertical_edges:
+            if edge_x > x and edge_y_min <= y < edge_y_max:
+                crossings += 1
+        return crossings % 2 == 1
+    
+    def rect_fully_inside(rx1, ry1, rx2, ry2):
+        """Check if rectangle is fully inside or on boundary of polygon."""
+        for x, y in [(rx1, ry1), (rx1, ry2), (rx2, ry1), (rx2, ry2)]:
+            if not is_inside(x, y):
+                on_boundary = False
+                for edge_x, edge_y_min, edge_y_max in vertical_edges:
+                    if edge_x == x and edge_y_min <= y <= edge_y_max:
+                        on_boundary = True
+                        break
+                if not on_boundary:
+                    for edge_x_min, edge_x_max, edge_y in horizontal_edges:
+                        if edge_y == y and edge_x_min <= x <= edge_x_max:
+                            on_boundary = True
+                            break
+                if not on_boundary:
+                    return False
+        
+        # Check if any polygon edge crosses through rectangle interior
+        for edge_x, edge_y_min, edge_y_max in vertical_edges:
+            # Vertical edge crosses interior if it's strictly between rx1 and rx2
+            # and overlaps with ry1 to ry2
+            if rx1 < edge_x < rx2:
+                if edge_y_min < ry2 and edge_y_max > ry1:
+                    return False
+        
+        for edge_x_min, edge_x_max, edge_y in horizontal_edges:
+            # Horizontal edge crosses interior if it's strictly between ry1 and ry2
+            # and overlaps with rx1 to rx2
+            if ry1 < edge_y < ry2:
+                if edge_x_min < rx2 and edge_x_max > rx1:
+                    return False
+        
+        return True
+    
+    # Find the largest rectangle with red corners that only contains valid tiles
     largest = 0
-    print("Find circuit lines:", find_circuit)
-    print("Rects to check:", rects)
-    for x1, y1 in rects:
-        for x2, y2 in rects:
+    
+    for i, (x1, y1) in enumerate(red_tiles):
+        for j, (x2, y2) in enumerate(red_tiles):
+            if i >= j:
+                continue
+            
             rx1, rx2 = sorted((x1, x2))
             ry1, ry2 = sorted((y1, y2))
-            broken = False
-            for line_start, line_end in find_circuit.items():
-                lx1, lx2 = sorted((line_start[0], line_end[0]))
-                ly1, ly2 = sorted((line_start[1], line_end[1]))
-                if lx1 == lx2: # vertical line
-                    if rx1 < lx1 < rx2: # line is within x bounds
-                        if ry1 < ly2 and ry2 > ly1: 
-                            broken = True
-                            break
-                else: # horizontal line
-                    if ry1 < ly1 < ry2: # line is within y bounds
-                        if lx1 < rx2 and lx2 > rx1:
-                            broken = True
-                            break
-            if broken:
+            
+            # Quick check: if rectangle is too small to beat current largest, skip
+            area = (rx2 - rx1 + 1) * (ry2 - ry1 + 1)
+            if area <= largest:
                 continue
-            area = abs(x2 - x1 + 1) * abs(y2 - y1 + 1)
-            if area > largest:
+            
+            if rect_fully_inside(rx1, ry1, rx2, ry2):
                 largest = area
+    
     return largest
 
 def test_1_1():
