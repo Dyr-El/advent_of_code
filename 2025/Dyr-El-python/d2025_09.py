@@ -59,7 +59,7 @@ def part2(inp):
         return crossings % 2 == 1
     
     def rect_fully_inside(rx1, ry1, rx2, ry2):
-        """Check if rectangle is fully inside or on boundary of polygon."""
+        # All corners inside or on boundary?
         for x, y in [(rx1, ry1), (rx1, ry2), (rx2, ry1), (rx2, ry2)]:
             if not is_inside(x, y):
                 on_boundary = False
@@ -75,42 +75,32 @@ def part2(inp):
                 if not on_boundary:
                     return False
         
-        # Check if any polygon edge crosses through rectangle interior
+        # No vertical edges cross interior?
         for edge_x, edge_y_min, edge_y_max in vertical_edges:
-            # Vertical edge crosses interior if it's strictly between rx1 and rx2
-            # and overlaps with ry1 to ry2
             if rx1 < edge_x < rx2:
                 if edge_y_min < ry2 and edge_y_max > ry1:
                     return False
         
+        # No horizonal edges cross interior?
         for edge_x_min, edge_x_max, edge_y in horizontal_edges:
-            # Horizontal edge crosses interior if it's strictly between ry1 and ry2
-            # and overlaps with rx1 to rx2
             if ry1 < edge_y < ry2:
                 if edge_x_min < rx2 and edge_x_max > rx1:
                     return False
         
         return True
-    
-    # Find the largest rectangle with red corners that only contains valid tiles
     largest = 0
     
     for i, (x1, y1) in enumerate(red_tiles):
         for j, (x2, y2) in enumerate(red_tiles):
             if i >= j:
                 continue
-            
             rx1, rx2 = sorted((x1, x2))
             ry1, ry2 = sorted((y1, y2))
-            
-            # Quick check: if rectangle is too small to beat current largest, skip
             area = (rx2 - rx1 + 1) * (ry2 - ry1 + 1)
             if area <= largest:
                 continue
-            
             if rect_fully_inside(rx1, ry1, rx2, ry2):
                 largest = area
-    
     return largest
 
 def test_1_1():
